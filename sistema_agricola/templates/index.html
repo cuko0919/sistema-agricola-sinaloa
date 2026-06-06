@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>AgroSinaloa</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --g50:#EAF3DE;--g100:#C0DD97;--g400:#639922;--g600:#3B6D11;--g800:#27500A;
+  --b50:#E6F1FB;--b100:#B5D4F4;--b400:#378ADD;--b600:#185FA5;--b800:#0C447C;
+  --a50:#FAEEDA;--a100:#FAC775;--a400:#BA7517;--a600:#854F0B;--a800:#633806;
+  --r50:#FCEBEB;--r100:#F7C1C1;--r400:#E24B4A;--r600:#A32D2D;--r800:#791F1F;
+  --t50:#E1F5EE;--t100:#9FE1CB;--t400:#1D9E75;--t600:#0F6E56;--t800:#085041;
+  --gr50:#F1EFE8;--gr100:#D3D1C7;--gr400:#888780;--gr600:#5F5E5A;--gr800:#444441;
+  --bg:#f0f4ed;--card:#fff;--txt:#1a2a14;--txt2:#5a7052;--brd:#dde8d5;
+  --rad:14px;--rad-sm:10px;--rad-xs:7px
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;max-width:430px;margin:0 auto}
+
+.app-hdr{background:var(--g600);color:#fff;padding:14px 18px 12px;display:flex;align-items:center;justify-content:space-between}
+.app-hdr-left{display:flex;align-items:center;gap:10px}
+.app-logo{width:36px;height:36px;background:rgba(255,255,255,.15);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.app-title{font-size:15px;font-weight:700;letter-spacing:-.2px}
+.app-sub{font-size:10px;opacity:.7;margin-top:1px}
+.app-bell{width:34px;height:34px;background:rgba(255,255,255,.12);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;border:none;color:#fff}
+
+.clima-bar{background:var(--g800);color:rgba(255,255,255,.85);font-size:11px;padding:7px 18px;display:flex;align-items:center;gap:6px}
+.clima-bar span{opacity:.6}
+
+.hero{background:var(--g600);padding:0 18px 20px}
+.hero-fecha{color:rgba(255,255,255,.7);font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px}
+.hero-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hero-stat{background:rgba(255,255,255,.1);border-radius:12px;padding:13px;border:1px solid rgba(255,255,255,.12)}
+.hero-stat .hn{font-size:26px;font-weight:700;color:#fff;line-height:1}
+.hero-stat .hl{font-size:10px;color:rgba(255,255,255,.7);margin-top:4px;font-weight:500;text-transform:uppercase;letter-spacing:.5px}
+.hero-stat .hi{font-size:11px;color:rgba(255,255,255,.55);margin-top:2px}
+
+.nav-bottom{background:var(--card);border-top:1px solid var(--brd);display:flex;padding:8px 0 10px}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 0;border:none;background:none;cursor:pointer;font-family:'Inter',sans-serif;color:var(--txt2);font-size:9px;font-weight:500;letter-spacing:.3px;text-transform:uppercase;transition:color .15s}
+.nav-btn .ni{font-size:20px;transition:transform .15s}
+.nav-btn.on{color:var(--g600)}
+.nav-btn.on .ni{transform:scale(1.15)}
+
+.main{padding:16px 14px 20px}
+.sec{display:none}
+.sec.on{display:block}
+
+.sec-title{font-size:13px;font-weight:600;color:var(--txt2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px;padding-left:2px}
+
+.card{background:var(--card);border-radius:var(--rad);border:1px solid var(--brd);padding:16px;margin-bottom:12px}
+.card-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.card-row h3{font-size:14px;font-weight:600;color:var(--txt)}
+.card-row span{font-size:11px;color:var(--txt2)}
+
+.alerta-card{border-radius:var(--rad);padding:14px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start;border:1px solid}
+.alerta-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.alerta-body .at{font-size:13px;font-weight:600;margin-bottom:2px}
+.alerta-body .as{font-size:11px;line-height:1.5;opacity:.85}
+.al-verde{background:var(--g50);border-color:var(--g100);color:var(--g800)}
+.al-verde .alerta-icon{background:var(--g100)}
+.al-azul{background:var(--b50);border-color:var(--b100);color:var(--b800)}
+.al-azul .alerta-icon{background:var(--b100)}
+.al-rojo{background:var(--r50);border-color:var(--r100);color:var(--r800)}
+.al-rojo .alerta-icon{background:var(--r100)}
+.al-amber{background:var(--a50);border-color:var(--a100);color:var(--a800)}
+.al-amber .alerta-icon{background:var(--a100)}
+
+.chip{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:600;letter-spacing:.3px}
+.chip-v{background:var(--g50);color:var(--g800);border:1px solid var(--g100)}
+.chip-b{background:var(--b50);color:var(--b800);border:1px solid var(--b100)}
+.chip-r{background:var(--r50);color:var(--r800);border:1px solid var(--r100)}
+.chip-a{background:var(--a50);color:var(--a800);border:1px solid var(--a100)}
+.chip-gr{background:var(--gr50);color:var(--gr800);border:1px solid var(--gr100)}
+
+.cultivo-card{background:var(--card);border-radius:var(--rad);border:1px solid var(--brd);padding:14px;margin-bottom:10px}
+.cc-top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.cc-ico{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.cc-ico-v{background:var(--g50)}
+.cc-ico-b{background:var(--b50)}
+.cc-ico-a{background:var(--a50)}
+.cc-ico-r{background:var(--r50)}
+.cc-info{flex:1;min-width:0}
+.cc-nombre{font-size:14px;font-weight:600;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cc-parcela{font-size:11px;color:var(--txt2);margin-top:1px}
+.cc-chips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
+.barra-bg{height:6px;background:var(--brd);border-radius:3px;overflow:hidden;margin-bottom:6px}
+.barra-fill{height:100%;background:var(--g400);border-radius:3px}
+.barra-meta{display:flex;justify-content:space-between;font-size:10px;color:var(--txt2)}
+.cc-eventos{display:flex;flex-direction:column;gap:6px;margin-top:10px;border-top:1px solid var(--brd);padding-top:10px}
+.cc-ev{display:flex;align-items:center;gap:8px;font-size:12px}
+.cc-ev .ei{font-size:13px;width:22px;text-align:center}
+.cc-ev .en{flex:1;color:var(--txt)}
+.cc-ev .ed{font-size:11px;font-weight:600;color:var(--txt2)}
+.cc-actions{display:flex;gap:8px;margin-top:12px;border-top:1px solid var(--brd);padding-top:10px}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:11px 18px;border-radius:var(--rad-sm);font-size:13px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;border:none;transition:all .15s;width:100%}
+.btn-verde{background:var(--g600);color:#fff}
+.btn-verde:active{background:var(--g800)}
+.btn-azul{background:var(--b600);color:#fff}
+.btn-azul:active{background:var(--b800)}
+.btn-out{background:transparent;border:1.5px solid var(--brd);color:var(--txt2)}
+.btn-out:active{background:var(--bg)}
+.btn-sm{padding:8px 14px;font-size:12px;border-radius:var(--rad-xs)}
+.btn-danger{background:var(--r50);color:var(--r800);border:1px solid var(--r100)}
+.btn-danger:active{background:var(--r100)}
+
+.campo{margin-bottom:13px}
+.campo label{display:block;font-size:12px;font-weight:500;color:var(--txt2);margin-bottom:5px}
+.campo input,.campo select,.campo textarea{width:100%;padding:12px 14px;border:1.5px solid var(--brd);border-radius:var(--rad-sm);font-size:14px;font-family:'Inter',sans-serif;color:var(--txt);background:#fff;appearance:none;-webkit-appearance:none}
+.campo input:focus,.campo select:focus,.campo textarea:focus{outline:none;border-color:var(--g400)}
+.campo textarea{resize:vertical;min-height:80px;line-height:1.5}
+.campo-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+.info-box{background:var(--g50);border-radius:var(--rad-sm);padding:12px;margin-bottom:14px;border:1px solid var(--g100);display:none}
+.info-box .ib-t{font-size:12px;font-weight:600;color:var(--g800);margin-bottom:5px}
+.info-box .ib-s{font-size:11px;color:var(--g600);line-height:1.6}
+
+.ia-result{background:#fff;border:1px solid var(--b100);border-radius:var(--rad);padding:16px;margin-top:14px}
+.ia-result .ir-hdr{font-size:12px;font-weight:600;color:var(--b800);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.ia-section{margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--brd)}
+.ia-section:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none}
+.ia-section .is-t{font-size:11px;font-weight:700;color:var(--b600);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.ia-section .is-b{font-size:13px;color:var(--txt);line-height:1.7}
+
+.spin-wrap{display:none;flex-direction:column;align-items:center;gap:10px;padding:28px;color:var(--txt2);font-size:13px}
+.spin{width:28px;height:28px;border:3px solid var(--brd);border-top-color:var(--g400);border-radius:50%;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+.empty{text-align:center;padding:32px 16px;color:var(--txt2)}
+.empty .ei{font-size:36px;margin-bottom:8px}
+.empty p{font-size:13px;line-height:1.6}
+
+.clima-widget{background:var(--t50);border:1px solid var(--t100);border-radius:var(--rad);padding:14px;margin-bottom:12px}
+.cw-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.cw-top h3{font-size:13px;font-weight:600;color:var(--t800)}
+.cw-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cw-item{background:rgba(255,255,255,.6);border-radius:9px;padding:10px;text-align:center}
+.cw-item .cv{font-size:18px;font-weight:700;color:var(--t800)}
+.cw-item .cl{font-size:10px;color:var(--t600);margin-top:2px;font-weight:500}
+
+.actividad-item{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--brd)}
+.actividad-item:last-child{border-bottom:none}
+.act-dot{width:8px;height:8px;border-radius:50%;margin-top:4px;flex-shrink:0}
+.act-verde{background:var(--g400)}
+.act-azul{background:var(--b400)}
+.act-amber{background:var(--a400)}
+.act-rojo{background:var(--r400)}
+.act-body .at{font-size:12px;font-weight:500;color:var(--txt)}
+.act-body .as{font-size:11px;color:var(--txt2);margin-top:1px}
+
+.contador-wrap{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.contador{background:var(--card);border:1px solid var(--brd);border-radius:var(--rad);padding:14px;text-align:center}
+.contador .cn{font-size:28px;font-weight:700;line-height:1}
+.contador .cl{font-size:10px;color:var(--txt2);margin-top:5px;font-weight:500;text-transform:uppercase;letter-spacing:.5px}
+
+.tabs-seg{display:flex;background:var(--bg);border-radius:var(--rad-sm);padding:3px;margin-bottom:14px;border:1px solid var(--brd)}
+.tab-seg{flex:1;padding:8px 6px;text-align:center;font-size:11px;font-weight:600;color:var(--txt2);background:none;border:none;border-radius:8px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s}
+.tab-seg.on{background:var(--card);color:var(--g800);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+
+.notif-dot{width:8px;height:8px;background:#E24B4A;border-radius:50%;position:absolute;top:6px;right:6px}
+.bell-wrap{position:relative}
+</style>
+</head>
+<body>
+
+<header class="app-hdr">
+  <div class="app-hdr-left">
+    <div class="app-logo">&#127806;</div>
+    <div>
+      <div class="app-title">AgroSinaloa</div>
+      <div class="app-sub">Gestor inteligente de cosechas</div>
+    </div>
+  </div>
+  <div class="bell-wrap">
+    <button class="app-bell" onclick="irTab('alertas',3)" aria-label="Alertas">&#128276;</button>
+    <div class="notif-dot" id="notif-dot" style="display:none"></div>
+  </div>
+</header>
+
+<div class="clima-bar">
+  <span>&#127774;</span>
+  <span id="clima-texto">Culiacan, Sinaloa &mdash; Cargando clima...</span>
+</div>
+
+<div class="hero">
+  <div class="hero-fecha" id="hero-fecha"></div>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hn" id="h-activos">0</div>
+      <div class="hl">Cultivos activos</div>
+      <div class="hi">en campo</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hn" id="h-riego" style="color:#FAC775">-</div>
+      <div class="hl">Proximo riego</div>
+      <div class="hi" id="h-riego-nom">calculando...</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hn" id="h-plagas" style="color:#F7C1C1">0</div>
+      <div class="hl">Alertas plaga</div>
+      <div class="hi">ventanas activas</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hn" id="h-cosechas" style="color:#9FE1CB">0</div>
+      <div class="hl">Cosechas</div>
+      <div class="hi">proximos 30 dias</div>
+    </div>
+  </div>
+</div>
+
+<main class="main">
+
+  <!-- HOME -->
+  <section class="sec on" id="sec-home">
+
+    <div class="clima-widget">
+      <div class="cw-top">
+        <h3>&#127781; Condiciones del campo hoy</h3>
+        <span class="chip chip-v">Actualizado</span>
+      </div>
+      <div class="cw-grid">
+        <div class="cw-item"><div class="cv">38&#176;C</div><div class="cl">Temperatura</div></div>
+        <div class="cw-item"><div class="cv">15%</div><div class="cl">Humedad</div></div>
+        <div class="cw-item"><div class="cv">Alto</div><div class="cl">Riesgo plaga</div></div>
+        <div class="cw-item"><div class="cv">Seco</div><div class="cl">Condicion</div></div>
+      </div>
+    </div>
+
+    <div class="card-row" style="margin-bottom:10px">
+      <h3 style="font-size:14px;font-weight:600">Alertas recientes</h3>
+      <span class="chip chip-r" id="badge-alertas">0 nuevas</span>
+    </div>
+    <div id="home-alertas">
+      <div class="empty"><div class="ei">&#10003;</div><p>Sin alertas pendientes.<br>Todo en orden.</p></div>
+    </div>
+
+    <div class="card-row" style="margin-bottom:10px;margin-top:16px">
+      <h3 style="font-size:14px;font-weight:600">Mis cultivos</h3>
+      <button class="btn btn-out btn-sm" style="width:auto" onclick="irTab('cultivos',1)">Ver todos</button>
+    </div>
+    <div id="home-cultivos">
+      <div class="empty"><div class="ei">&#127807;</div><p>Sin cultivos registrados.<br>Agrega uno para comenzar.</p></div>
+    </div>
+
+    <button class="btn btn-verde" style="margin-top:6px" onclick="irTab('agregar',2)">
+      &#43; Registrar nuevo cultivo
+    </button>
+
+    <div class="card-row" style="margin-bottom:10px;margin-top:16px">
+      <h3 style="font-size:14px;font-weight:600">Actividad reciente</h3>
+    </div>
+    <div class="card" style="padding:14px">
+      <div id="actividad-lista">
+        <p style="font-size:12px;color:var(--txt2);text-align:center;padding:10px">Sin actividad registrada.</p>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- MIS CULTIVOS -->
+  <section class="sec" id="sec-cultivos">
+    <div class="tabs-seg">
+      <button class="tab-seg on" onclick="filtrarCultivos('activo',this)">Activos</button>
+      <button class="tab-seg" onclick="filtrarCultivos('todos',this)">Todos</button>
+      <button class="tab-seg" onclick="filtrarCultivos('completado',this)">Completados</button>
+    </div>
+    <div id="lista-cultivos">
+      <div class="empty"><div class="ei">&#127807;</div><p>Cargando cultivos...</p></div>
+    </div>
+  </section>
+
+  <!-- REGISTRAR -->
+  <section class="sec" id="sec-agregar">
+    <p class="sec-title">Nuevo cultivo</p>
+
+    <form action="/registrar" method="post" id="form-reg" onsubmit="submitForm(this,'spin-reg')">
+
+      <div class="campo">
+        <label>Tipo de cultivo</label>
+        <select name="tipo_reg" required onchange="onTipoChange(this.value)">
+          <option value="">-- Selecciona el cultivo --</option>
+          <option value="maiz">&#127805; Maiz Blanco</option>
+          <option value="tomate">&#129364; Tomate / Hortalizas</option>
+          <option value="frijol">&#129752; Frijol Azufrado</option>
+          <option value="garbanzo">&#11035; Garbanzo Blanco Sinaloa</option>
+        </select>
+      </div>
+
+      <div id="info-cultivo" class="info-box">
+        <div class="ib-t" id="ib-titulo"></div>
+        <div class="ib-s" id="ib-desc"></div>
+      </div>
+
+      <div class="campo">
+        <label>Nombre o alias del cultivo</label>
+        <input type="text" name="cultivo_reg" placeholder="Ej: Maiz Lote Norte" required>
+      </div>
+
+      <div class="campo-row">
+        <div class="campo" style="margin-bottom:0">
+          <label>Fecha de siembra</label>
+          <input type="date" name="siembra_reg" required>
+        </div>
+        <div class="campo" style="margin-bottom:0">
+          <label>Superficie (ha)</label>
+          <input type="number" name="superficie" step="0.1" min="0" placeholder="12.5">
+        </div>
+      </div>
+
+      <div class="campo" style="margin-top:13px">
+        <label>Nombre de la parcela</label>
+        <input type="text" name="parcela_reg" placeholder="Ej: Valle del Fuerte, Lote A">
+      </div>
+
+      <div class="campo">
+        <label>Notas del campo (opcional)</label>
+        <textarea name="notas_reg" placeholder="Variedad, condicion del suelo, observaciones iniciales..."></textarea>
+      </div>
+
+      <div class="spin-wrap" id="spin-reg">
+        <div class="spin"></div>
+        Guardando cultivo...
+      </div>
+
+      <button type="submit" class="btn btn-verde">
+        &#128190; Guardar y activar alertas
+      </button>
+
+    </form>
+
+    {% if resultado_registro %}
+    <div class="alerta-card al-verde" style="margin-top:14px">
+      <div class="alerta-icon">&#10003;</div>
+      <div class="alerta-body">
+        <div class="at">Cultivo registrado</div>
+        <div class="as">{{ resultado_registro }}</div>
+      </div>
+    </div>
+    {% endif %}
+
+    <div style="margin-top:20px">
+      <p class="sec-title">Referencia rapida</p>
+      <div class="alerta-card al-verde">
+        <div class="alerta-icon">&#127805;</div>
+        <div class="alerta-body">
+          <div class="at">Maiz Blanco &mdash; Nov 5 a Dic 15</div>
+          <div class="as">4-5 riegos aux c/25-30 dias. Gusano Cogollero dias 0-60. Cosecha Mayo-Jul con 14-16% humedad.</div>
+        </div>
+      </div>
+      <div class="alerta-card al-azul">
+        <div class="alerta-icon">&#129364;</div>
+        <div class="alerta-body">
+          <div class="at">Tomate &mdash; Nov 5 a Feb 15</div>
+          <div class="as">Goteo diario. NUNCA saturar. Mosquita Blanca desde trasplante. Cosecha escalonada dia 90+.</div>
+        </div>
+      </div>
+      <div class="alerta-card al-amber">
+        <div class="alerta-icon">&#129752;</div>
+        <div class="alerta-body">
+          <div class="at">Frijol Azufrado &mdash; Sep 20 a Oct 31</div>
+          <div class="as">Max 2 riegos auxilios. Muy sensible al exceso. Mosca Blanca primeros 30 dias. Cosecha Feb-Mar.</div>
+        </div>
+      </div>
+      <div class="alerta-card al-rojo">
+        <div class="alerta-icon">&#11035;</div>
+        <div class="alerta-body">
+          <div class="at">Garbanzo &mdash; Nov 15 a Ene 15</div>
+          <div class="as">Presiembra + maximo 1 auxilio. Gusano Capsula dias 70-110 cuando se forma el grano.</div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ALERTAS -->
+  <section class="sec" id="sec-alertas">
+    <p class="sec-title">Centro de alertas</p>
+    <div class="contador-wrap">
+      <div class="contador">
+        <div class="cn" id="cnt-riegos" style="color:var(--b600)">0</div>
+        <div class="cl">Riegos</div>
+      </div>
+      <div class="contador">
+        <div class="cn" id="cnt-plagas" style="color:var(--r600)">0</div>
+        <div class="cl">Plagas</div>
+      </div>
+    </div>
+    <div id="alertas-lista">
+      <div class="empty"><div class="ei">&#128276;</div><p>Sin alertas activas.<br>Registra un cultivo para comenzar.</p></div>
+    </div>
+  </section>
+
+  <!-- IA -->
+  <section class="sec" id="sec-ia">
+    <p class="sec-title">Experto IA agricola</p>
+
+    <form action="/diagnostico" method="post" id="form-ia" onsubmit="submitForm(this,'spin-ia')">
+
+      <div class="campo">
+        <label>Cultivo a diagnosticar</label>
+        <select name="cultivo_ia" required>
+          <option value="">-- Selecciona --</option>
+          <option value="maiz">&#127805; Maiz Blanco</option>
+          <option value="tomate">&#129364; Tomate</option>
+          <option value="frijol">&#129752; Frijol</option>
+          <option value="garbanzo">&#11035; Garbanzo</option>
+        </select>
+      </div>
+
+      <div class="campo-row">
+        <div class="campo" style="margin-bottom:0">
+          <label>Fecha de siembra</label>
+          <input type="date" name="siembra_ia" required>
+        </div>
+        <div class="campo" style="margin-bottom:0">
+          <label>Clima actual</label>
+          <input type="text" name="clima_ia" placeholder="38C seco" required>
+        </div>
+      </div>
+
+      <div class="campo" style="margin-top:13px">
+        <label>Tu pregunta al experto</label>
+        <textarea name="pregunta_ia" rows="3" placeholder="Le toca riego esta semana? Vi manchas en las hojas, es plaga? Cuanto fertilizante le pongo?"></textarea>
+      </div>
+
+      <div class="spin-wrap" id="spin-ia">
+        <div class="spin"></div>
+        Consultando al experto IA...
+      </div>
+
+      <button type="submit" class="btn btn-azul">
+        &#128269; Consultar experto IA
+      </button>
+    </form>
+
+    {% if resultado_diagnostico %}
+    <div class="ia-result">
+      <div class="ir-hdr">&#129302; Diagnostico del experto</div>
+      <div id="ia-content">{{ resultado_diagnostico }}</div>
+    </div>
+    {% endif %}
+
+    <div class="alerta-card al-amber" style="margin-top:14px">
+      <div class="alerta-icon">&#128161;</div>
+      <div class="alerta-body">
+        <div class="at">Tip para mejor diagnostico</div>
+        <div class="as">Incluye el clima actual, si viste sintomas en las plantas y cuantos dias lleva sembrado. Mientras mas detallado, mejor la respuesta.</div>
+      </div>
+    </div>
+
+  </section>
+
+</main>
+
+<nav class="nav-bottom">
+  <button class="nav-btn on" onclick="irTab('home',0)" id="nb-0">
+    <span class="ni">&#127968;</span>
+    Inicio
+  </button>
+  <button class="nav-btn" onclick="irTab('cultivos',1)" id="nb-1">
+    <span class="ni">&#127807;</span>
+    Cultivos
+  </button>
+  <button class="nav-btn" onclick="irTab('agregar',2)" id="nb-2">
+    <span class="ni">&#43;</span>
+    Agregar
+  </button>
+  <button class="nav-btn" onclick="irTab('alertas',3)" id="nb-3">
+    <span class="ni">&#128276;</span>
+    Alertas
+  </button>
+  <button class="nav-btn" onclick="irTab('ia',4)" id="nb-4">
+    <span class="ni">&#129302;</span>
+    IA
+  </button>
+</nav>
+
+<script>
+var HOY = new Date();
+var TABS = ['home','cultivos','agregar','alertas','ia'];
+var DATA_CACHE = null;
+var TAB_ACTIVO = "{{ tab_activo if tab_activo else '' }}";
+
+var MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+var DIAS  = ['domingo','lunes','martes','miercoles','jueves','viernes','sabado'];
+document.getElementById('hero-fecha').textContent =
+  DIAS[HOY.getDay()] + ', ' + HOY.getDate() + ' de ' + MESES[HOY.getMonth()] + ' ' + HOY.getFullYear();
+document.getElementById('clima-texto').textContent =
+  'Culiacan, Sinaloa \u2014 ' + DIAS[HOY.getDay()] + ' ' + HOY.getDate() + ' de ' + MESES[HOY.getMonth()];
+
+var ICONOS  = {maiz:'\u{1F33D}',tomate:'\u{1F345}',frijol:'\u{1FAD8}',garbanzo:'\u2B1B'};
+var ICOCSS  = {maiz:'cc-ico-v',tomate:'cc-ico-b',frijol:'cc-ico-a',garbanzo:'cc-ico-r'};
+var INFO_CULTIVOS = {
+  maiz:    {t:'Maiz Blanco - ~210 dias',    d:'Siembra optima Nov-Dic. 450-500mm agua. 4-5 riegos aux c/25-30 dias. Critico: jiloteo y llenado grano. Gusano Cogollero dias 0-60.'},
+  tomate:  {t:'Tomate / Hortalizas - ~180 dias',d:'Trasplante Nov-Feb. Goteo diario. NUNCA saturar. Mosquita Blanca desde dia 0. Cosecha escalonada dia 90+.'},
+  frijol:  {t:'Frijol Azufrado - ~120 dias', d:'Siembra Sep-Oct. Max 2 riegos aux. Muy sensible al exceso de agua. Mosca Blanca primeros 30 dias.'},
+  garbanzo:{t:'Garbanzo Blanco - ~130 dias', d:'Siembra Nov-Ene. Solo presiembra si el suelo retiene bien. Gusano Capsula dias 70-110.'}
+};
+
+function irTab(nombre, idx) {
+  TABS.forEach(function(t) { document.getElementById('sec-'+t).classList.remove('on'); });
+  for (var i = 0; i < 5; i++) { document.getElementById('nb-'+i).classList.remove('on'); }
+  document.getElementById('sec-'+nombre).classList.add('on');
+  document.getElementById('nb-'+idx).classList.add('on');
+  if (nombre === 'cultivos') renderCultivos('activo');
+  if (nombre === 'alertas')  renderAlertas();
+  if (nombre === 'home')     renderHome();
+}
+
+function submitForm(form, spinId) {
+  var sp  = document.getElementById(spinId);
+  var btn = form.querySelector('button[type=submit]');
+  if (sp)  sp.style.display  = 'flex';
+  if (btn) btn.style.display = 'none';
+}
+
+function onTipoChange(v) {
+  var box = document.getElementById('info-cultivo');
+  var tit = document.getElementById('ib-titulo');
+  var dsc = document.getElementById('ib-desc');
+  if (INFO_CULTIVOS[v]) {
+    tit.textContent  = INFO_CULTIVOS[v].t;
+    dsc.textContent  = INFO_CULTIVOS[v].d;
+    box.style.display = 'block';
+  } else {
+    box.style.display = 'none';
+  }
+}
+
+function fetchData(cb) {
+  if (DATA_CACHE) { cb(DATA_CACHE); return; }
+  fetch('/api/siembras')
+    .then(function(r) { return r.json(); })
+    .then(function(d) { DATA_CACHE = d; cb(d); })
+    .catch(function(e) { console.error('fetchData:', e); cb([]); });
+}
+
+function renderHome() {
+  DATA_CACHE = null;
+  fetchData(function(data) {
+    var activos  = data.filter(function(s) { return s.estado === 'activo'; });
+    var minRiego = 9999, nomRiego = 'sin riegos', plagas = 0, cosechas = 0;
+    var alertasHTML = '';
+
+    activos.forEach(function(s) {
+      s.proximos_eventos.forEach(function(ev) {
+        if (ev.tipo === 'plaga')  plagas++;
+        if (ev.tipo === 'cosecha' && ev.dias_restantes <= 30) cosechas++;
+        if (ev.tipo === 'riego'  && ev.dias_restantes < minRiego) {
+          minRiego = ev.dias_restantes;
+          nomRiego = ev.nombre;
+        }
+        if (ev.dias_restantes <= 3) {
+          var cls  = ev.tipo==='riego' ? 'al-azul' : ev.tipo==='plaga' ? 'al-rojo' : 'al-amber';
+          var ico  = ev.tipo==='riego' ? '\u{1F4A7}' : ev.tipo==='plaga' ? '\u{1F41B}' : '\u{1F33E}';
+          var dias = ev.dias_restantes === 0 ? 'HOY' : ev.dias_restantes + 'd';
+          alertasHTML +=
+            '<div class="alerta-card ' + cls + '" style="margin-bottom:8px">' +
+              '<div class="alerta-icon">' + ico + '</div>' +
+              '<div class="alerta-body">' +
+                '<div class="at">' + s.cultivo + ' \u2014 ' + ev.nombre + '</div>' +
+                '<div class="as">' + s.parcela  + ' \u2022 ' + dias + '</div>' +
+              '</div>' +
+            '</div>';
+        }
+      });
+    });
+
+    document.getElementById('h-activos').textContent    = activos.length;
+    document.getElementById('h-riego').textContent      = minRiego < 9999 ? minRiego + 'd' : '-';
+    document.getElementById('h-riego-nom').textContent  = nomRiego;
+    document.getElementById('h-plagas').textContent     = plagas;
+    document.getElementById('h-cosechas').textContent   = cosechas;
+    document.getElementById('badge-alertas').textContent = alertasHTML ? '! urgentes' : '0 nuevas';
+    document.getElementById('home-alertas').innerHTML   = alertasHTML ||
+      '<div class="empty" style="padding:16px"><div class="ei">\u2713</div><p>Sin alertas urgentes.</p></div>';
+
+    if (alertasHTML) document.getElementById('notif-dot').style.display = 'block';
+
+    var cultivosHTML = '';
+    activos.slice(0, 2).forEach(function(s) { cultivosHTML += buildCultCard(s, true); });
+    document.getElementById('home-cultivos').innerHTML = cultivosHTML ||
+      '<div class="empty" style="padding:16px"><div class="ei">\u{1F33F}</div><p>Sin cultivos activos.</p></div>';
+
+    var actHTML = '';
+    data.slice(0, 4).forEach(function(s) {
+      var cls = s.estado === 'activo' ? 'act-verde' : 'act-amber';
+      actHTML +=
+        '<div class="actividad-item">' +
+          '<div class="act-dot ' + cls + '"></div>' +
+          '<div class="act-body">' +
+            '<div class="at">' + s.cultivo + '</div>' +
+            '<div class="as">' + s.parcela + ' \u2022 Sembrado ' + s.fecha_siembra + '</div>' +
+          '</div>' +
+        '</div>';
+    });
+    document.getElementById('actividad-lista').innerHTML = actHTML ||
+      '<p style="font-size:12px;color:var(--txt2);text-align:center;padding:10px">Sin actividad.</p>';
+  });
+}
+
+function buildCultCard(s, mini) {
+  var ico    = ICONOS[s.cultivo_tipo]  || '\u{1F33F}';
+  var icoCss = ICOCSS[s.cultivo_tipo]  || 'cc-ico-v';
+  var total  = Math.max(1, Math.floor(
+    (new Date(s.fecha_fin + 'T00:00:00') - new Date(s.fecha_siembra + 'T00:00:00')) / 86400000
+  ));
+  var trans  = Math.min(s.dias_transcurridos, total);
+  var pct    = Math.round((trans / total) * 100);
+  var limite = mini ? 2 : 5;
+  var evsHTML = '';
+
+  s.proximos_eventos.slice(0, limite).forEach(function(ev) {
+    var icos = ev.tipo==='riego' ? '\u{1F4A7}' : ev.tipo==='plaga' ? '\u{1F41B}' : '\u{1F33E}';
+    var d    = ev.dias_restantes === 0 ? 'HOY!' : ev.dias_restantes + 'd';
+    evsHTML +=
+      '<div class="cc-ev">' +
+        '<span class="ei">' + icos + '</span>' +
+        '<span class="en">' + ev.nombre + '</span>' +
+        '<span class="ed">' + d + '</span>' +
+      '</div>';
+  });
+
+  var chipEstado = s.estado === 'activo'
+    ? '<span class="chip chip-v">Activo</span>'
+    : '<span class="chip chip-gr">Listo</span>';
+  var actions = '';
+  if (!mini && s.estado === 'activo') {
+    actions =
+      '<div class="cc-actions">' +
+        '<button class="btn btn-out btn-sm" style="font-size:11px" onclick="cerrar(' + s.id + ')">Cerrar ciclo</button>' +
+      '</div>';
+  }
+
+  return (
+    '<div class="cultivo-card">' +
+      '<div class="cc-top">' +
+        '<div class="cc-ico ' + icoCss + '">' + ico + '</div>' +
+        '<div class="cc-info">' +
+          '<div class="cc-nombre">' + s.cultivo + '</div>' +
+          '<div class="cc-parcela">' + s.parcela + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="cc-chips">' +
+        chipEstado +
+        '<span class="chip chip-b">Dia ' + s.dias_transcurridos + '</span>' +
+        '<span class="chip chip-a">' + pct + '% ciclo</span>' +
+      '</div>' +
+      '<div class="barra-bg"><div class="barra-fill" style="width:' + pct + '%"></div></div>' +
+      '<div class="barra-meta"><span>' + s.fecha_siembra + '</span><span>' + s.fecha_fin + '</span></div>' +
+      (evsHTML ? '<div class="cc-eventos">' + evsHTML + '</div>' : '') +
+      actions +
+    '</div>'
+  );
+}
+
+var filtroActual = 'activo';
+function renderCultivos(filtro) {
+  filtroActual = filtro;
+  DATA_CACHE = null;
+  fetchData(function(data) {
+    var lista = filtro === 'todos' ? data : data.filter(function(s) { return s.estado === filtro; });
+    var html  = '';
+    lista.forEach(function(s) { html += buildCultCard(s, false); });
+    document.getElementById('lista-cultivos').innerHTML = html ||
+      '<div class="empty"><div class="ei">\u{1F33F}</div><p>Sin cultivos en esta categoria.</p></div>';
+  });
+}
+
+function filtrarCultivos(filtro, btn) {
+  document.querySelectorAll('.tab-seg').forEach(function(b) { b.classList.remove('on'); });
+  btn.classList.add('on');
+  renderCultivos(filtro);
+}
+
+function renderAlertas() {
+  DATA_CACHE = null;
+  fetchData(function(data) {
+    var activos = data.filter(function(s) { return s.estado === 'activo'; });
+    var riegos  = 0, plagas = 0, html = '';
+
+    activos.forEach(function(s) {
+      s.proximos_eventos.forEach(function(ev) {
+        if (ev.tipo === 'riego') riegos++;
+        if (ev.tipo === 'plaga') plagas++;
+        var cls  = ev.tipo==='riego' ? 'al-azul' : ev.tipo==='plaga' ? 'al-rojo' : 'al-amber';
+        var ico  = ev.tipo==='riego' ? '\u{1F4A7}' : ev.tipo==='plaga' ? '\u{1F41B}' : '\u{1F33E}';
+        var urg  = ev.dias_restantes === 0 ? 'HOY'
+                 : ev.dias_restantes <= 3  ? ev.dias_restantes + 'd (urgente)'
+                 : ev.dias_restantes + 'd';
+        html +=
+          '<div class="alerta-card ' + cls + '">' +
+            '<div class="alerta-icon">' + ico + '</div>' +
+            '<div class="alerta-body">' +
+              '<div class="at">' + ev.nombre + '</div>' +
+              '<div class="as">' + s.cultivo + ' \u2022 ' + s.parcela + '<br>' + urg + '</div>' +
+            '</div>' +
+          '</div>';
+      });
+    });
+
+    document.getElementById('cnt-riegos').textContent = riegos;
+    document.getElementById('cnt-plagas').textContent = plagas;
+    document.getElementById('alertas-lista').innerHTML = html ||
+      '<div class="empty"><div class="ei">\u{1F514}</div><p>Sin alertas activas.</p></div>';
+  });
+}
+
+function cerrar(id) {
+  if (!confirm('Marcar esta siembra como completada?')) return;
+  fetch('/cerrar/' + id, {method: 'POST'})
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.ok) { DATA_CACHE = null; renderCultivos(filtroActual); renderHome(); }
+      else alert('Error: ' + d.error);
+    })
+    .catch(function() { alert('Error de red.'); });
+}
+
+window.addEventListener('DOMContentLoaded', function() {
+  var mapa = {diagnostico:'ia', calendario:'cultivos', registrar:'agregar'};
+  if (TAB_ACTIVO) {
+    var nombre = mapa[TAB_ACTIVO] || TAB_ACTIVO;
+    var idx    = TABS.indexOf(nombre);
+    if (idx >= 0) irTab(nombre, idx);
+  }
+  renderHome();
+});
+</script>
