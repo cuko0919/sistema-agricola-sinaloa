@@ -7,7 +7,9 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from motor_tareas import revisar_calendario_agricola
 from google import genai
 from google.genai import types
+from dotenv import load_dotenv
 import uvicorn
+import os
 import database
 import bot_alerta
 import asyncio
@@ -16,8 +18,11 @@ from datetime import datetime, timedelta
 # ==============================================================
 # 1. CONFIGURACIÓN DE IA  (nueva librería google-genai)
 # ==============================================================
-GOOGLE_API_KEY = "TU_API_KEY_AQUI"
-client = genai.Client(api_key=GOOGLE_API_KEY)
+load_dotenv()
+
+# Leer la llave desde el archivo .env
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
 MODELO = "gemini-3.5-flash"
 
 # ==============================================================
