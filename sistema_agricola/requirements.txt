@@ -5,3 +5,4 @@ python-telegram-bot
 python-dotenv
 requests
 apscheduler
+jinja2
